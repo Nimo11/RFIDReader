@@ -1,10 +1,5 @@
 /**************************************************************
-   Ce sketch permet de connaître l'IUD d'un tag RFID
-   branché à un ESP8266 ou un ESP32.
-   
-   Utilisation de la bibliothèque MFRC522 par Miguel Balboa
-   
-   https://electroniqueamateur.blogspot.com/2019/02/module-rfid-rc522-et-esp8266.html
+
    
 *****************************************************************/
 
