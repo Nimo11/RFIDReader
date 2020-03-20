@@ -1,0 +1,55 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=RFIDReader
+*Date=15:44:16
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;47.2694;-28.417;0;Bottom;Copper Fill1
+2;;;12.4013;-29.8056;0;Bottom;Via7
+3;;;44.9072;-15.6154;0;Bottom;Copper Fill4
+4;;;44.8818;-7.9446;0;Bottom;Copper Fill14
+5;;;23.7875;-27.2088;0;Bottom;Via6
+6;;;42.9514;-29.3568;0;Bottom;Copper Fill12
+7;;;47.9582;-48.7826;0;Bottom;Via3
+8;;;27.4828;-42.6664;0;Bottom;Copper Fill5
+9;;;35.2736;-53.8764;0;Bottom;Via1
+10;10k;THT;39.0452;-27.2333;180;Bottom;R16
+11;;;42.8643;-51.3794;0;Bottom;Via4
+12;;;25.273;-53.4614;0;Bottom;Copper Fill6
+13;;;10.4511;-4.05265;0;Bottom;TXT1
+14;;;41.5659;-29.8056;0;Bottom;Via8
+15;;ptc;7.29525;-11.9933;90;Bottom;F1
+16;;;38.227;-36.545;0;Bottom;Copper Fill9
+17;;;39.878;-42.7172;0;Bottom;Copper Fill8
+18;;buzzer-12mm;47.9352;-58.4233;-180;Bottom;SG2
+19;;;17.636;-10.606;0;Bottom;blkr4
+20;;THT;21.1382;-23.9313;-90;Bottom;J-RC522
+21;;;51.7432;-41.6452;0;Top;blkr2
+22;;ptc;2.21525;-11.9933;-90;Bottom;F2
+23;;THT;5.67224;-3.86537;90;Bottom;J-AC
+24;;;27.4828;-38.0436;0;Bottom;Copper Fill3
+25;10k;THT;37.7752;-23.4233;180;Bottom;R24
+26;;;51.6037;-41.6153;0;Bottom;blkr3
+27;;;26.6954;-26.7914;0;Bottom;Copper Fill2
+28;;;31.3783;-51.3794;0;Bottom;Via5
+29;;;17.0974;-61.6672;0;Bottom;TXT2
+30;;;42.4688;-24.3022;0;Bottom;Copper Fill11
+31;;THT;50.9832;-23.5503;0;Bottom;J-PRG
+32;;;24.5618;-38.2722;0;Bottom;Copper Fill7
+33;;;42.1729;-41.1823;90;Top;U5
+34;;;31.5722;-21.6352;0;Bottom;Copper Fill13
+35;;;34.3916;-24.3022;0;Bottom;Copper Fill10
+36;100nF;100 mil [THT, multilayer];47.94;-10.7233;0;Bottom;C5
+37;;;27.0654;-10.7437;0;Bottom;HLK-PM1
+38;;;9.78631;-58.1609;0;Bottom;TXT3
+39;;;17.5927;-10.3869;0;Top;blkr1
+40;0.1nF;100 mil [THT, electrolytic];47.9352;-4.37326;180;Bottom;C2
