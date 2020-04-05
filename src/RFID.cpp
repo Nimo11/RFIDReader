@@ -24,7 +24,7 @@ uint32 RFIDRead()
         return uid;
     }
 
-    if ((millis() - _lastRead) > 3000 && _rfidd.uid.uidByte != _nuidPICC ||
+    if ((millis() - _lastRead) > 3000 && (_rfid.uid.uidByte != _nuidPICC ||
                                          _rfid.uid.uidByte[1] != _nuidPICC[1] ||
                                          _rfid.uid.uidByte[2] != _nuidPICC[2] ||
                                          _rfid.uid.uidByte[3] != _nuidPICC[3]))
@@ -36,7 +36,7 @@ uint32 RFIDRead()
         // Store NUID into nuidPICC array
         for (byte i = 0; i < 4; i++)
         {
-            nuidPICC[i] = _rfid.uid.uidByte[i];
+            _nuidPICC[i] = _rfid.uid.uidByte[i];
         }
 
         Serial.print(F("The NUID tag is:"));

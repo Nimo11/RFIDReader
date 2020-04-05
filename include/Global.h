@@ -6,6 +6,7 @@
 #include <ESP8266HTTPClient.h>
 #include "config.h"
 #include <MFRC522.h>
+#include "GITUpdater.h"
 
 enum NtpStates
 {
@@ -14,15 +15,12 @@ enum NtpStates
   Error
 };
 
-// current version for auto update
-extern const int _FW_VERSION;
-// auto update store
-extern const char* _fwUrlBase;
-
 extern LogObject _Log;
 extern HTTPClient _httpClient;
 extern WiFiClient _client;
 extern WiFiManager _wm;
+extern GITUpdater _updater;
+
 extern WiFiUDP _Udp;
 extern String _Cookie;
 

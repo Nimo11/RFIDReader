@@ -1,9 +1,5 @@
 #include "Global.h"
 
-const int _FW_VERSION = 1.0;
-const char* _fwUrlBase = "https://raw.githubusercontent.com/Nimo11/MyWattmeter/master/.pio/build/esp12e/";
-
-
 LogObject _Log;
 HTTPClient _httpClient;
 WiFiClient _client;
@@ -11,6 +7,7 @@ WiFiManager _wm;
 WiFiUDP _Udp;
 String _Cookie="";
 Config _config;
+GITUpdater _updater;
 
 Session _session;
 
@@ -32,7 +29,7 @@ const int _pinRST = 5;  // pin RST du module RC522
 const int _pinSDA = 4; // pin SDA du module RC522
 const int _pinBuz = 16; // Buzzer
 
-MFRC522 _rfid(_pinSDA, _pinRST);
+MFRC522 _rfid(_pinSDA);//, _pinRST
 
 //MFRC522::MIFARE_Key key; 
 byte _nuidPICC[4];

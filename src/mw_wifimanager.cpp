@@ -13,7 +13,7 @@ void setWifiManagerMenu()
   _wm.setDebugOutput(_Log.level==LogObject::DebugLevels::Verbose);
   _wm.setSaveParamsCallback(saveParam);
   _wm.setConfigPortalBlocking(true);
-  _wm.setCountry("FR");
+  //_wm.setCountry("FR");
 
   _wm.addParameter(&_url_server_param);
   _wm.addParameter(&_IP_param);

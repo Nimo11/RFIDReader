@@ -13,6 +13,7 @@
 #include "mw_wifimanager.h"
 #include "RFID.h"
 #include "api.h"
+#include "version.h"
 
 void buzz(int buzzCount)
 {
@@ -31,7 +32,11 @@ void setup()
 
 	_Log.debugType = LogObject::DebugType::SerialType;
 	_Log.level = LogObject::DebugLevels::Verbose;
-	
+
+//const char* _fwUrlBase = "https://raw.githubusercontent.com/Nimo11/MyWattmeter/master/.pio/build/esp12e/";
+	_updater.SetCurrentVersion(BUILD_NUMBER);
+	_updater.SetGITProjectURL("https://github.com/Nimo11/RFIDReader");
+
 	WiFi.hostname(F("RFIDReader"));
 	
 	SPI.begin();	 // Init SPI bus
@@ -39,6 +44,8 @@ void setup()
 	_rfid.PCD_AntennaOff();
 	delay(3000);
 	
+	_wm.setCountry("FR");
+	//_wm.WiFiManagerInit();
 	startSPIFFS();
 	loadConfig();
 	setWifiManagerMenu();
@@ -59,7 +66,7 @@ void setup()
 
 		//wm.server->onNotFound(handleWebRequests);
 
-		//checkForUpdates();
+		_updater.CheckUpdate();
 		buzz(3);
 	}
 	else
