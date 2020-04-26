@@ -4,7 +4,6 @@
 #*************************************************************
 
 import datetime
-
 tm = datetime.datetime.today()
 
 FILENAME_BUILDNO = 'versioning' #store last build number
