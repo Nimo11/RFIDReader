@@ -7,6 +7,7 @@
 #include "config.h"
 #include <MFRC522.h>
 #include "GITUpdater.h"
+#include "LanguageManager.h"
 
 enum NtpStates
 {
@@ -15,10 +16,11 @@ enum NtpStates
   Error
 };
 
+extern LanguageManager _Lm;
 extern LogObject _Log;
 extern HTTPClient _httpClient;
 extern WiFiClient _client;
-extern WiFiManager _wm;
+extern WiFiManager* _wm;
 extern GITUpdater _updater;
 
 extern WiFiUDP _Udp;
@@ -28,12 +30,22 @@ extern Session _session;
 
 extern Config _config;
 
-extern WiFiManagerParameter _url_server_param;
-extern WiFiManagerParameter _IP_param;
-extern WiFiManagerParameter _response_Ok_param;
-extern WiFiManagerParameter _User_param;
-extern WiFiManagerParameter _Password_param;
-extern WiFiManagerParameter _UidNode_param;
+class ConfigRef
+{
+public:
+    ConfigRef(char* param,const char* node,const char* label,int size)
+    {
+        CfgPtr = param;
+        Size =size;
+        WmParam=WiFiManagerParameter(node, label, param, Size);
+    }
+
+    char * CfgPtr;
+    int Size;
+    WiFiManagerParameter WmParam;
+};
+
+extern ConfigRef _paramConfig[7];
 
 extern const int _pinBuz;
 extern MFRC522 _rfid;
@@ -43,5 +55,7 @@ extern byte _nuidPICC[4];
 
 // store last card uid readed
 extern unsigned long _lastRead;
+
+
 
 #endif

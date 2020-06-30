@@ -14,21 +14,21 @@
 #include "RFID.h"
 #include "api.h"
 #include "version.h"
+#include "Buzz.h"
+#include <ESP8266WebServerSecure.h>
 
-void buzz(int buzzCount)
-{
-	for (int i = 0; i < buzzCount; i++)
-	{
-		digitalWrite(_pinBuz, HIGH); // Faire du bruit
-		delay(100);					// Attendre 10ms
-		digitalWrite(_pinBuz, LOW);  // Silence
-		delay(100);
-	}
-}
+#define BUZZ_PIN 16 // Buzzer
+
+const char *www_username = "admin";
+const char *www_password = "esp8266";
+
+Buzz _buzz(BUZZ_PIN);
 
 void setup()
 {
 	Serial.begin(115200);
+
+
 
 	_Log.debugType = LogObject::DebugType::SerialType;
 	_Log.level = LogObject::DebugLevels::Verbose;
@@ -36,59 +36,63 @@ void setup()
 	_updater.SetCurrentVersion(BUILD_NUMBER);
 	_updater.SetGITProjectURL("https://github.com/Nimo11/RFIDReader/master");
 
-	WiFi.hostname(F("RFIDReader"));
-	
-	SPI.begin();	 // Init SPI bus
+	SPI.begin();
 	_rfid.PCD_Init(); // Init MFRC522
-	_rfid.PCD_AntennaOff();
-	delay(3000);
-	
-	//_wm.setCountry("FR");
-	//_wm.WiFiManagerInit();
-	startSPIFFS();
-	loadConfig();
-	setWifiManagerMenu();
 
+	_rfid.PCD_DumpVersionToSerial();
+	_rfid.PCD_AntennaOff();
+	delay(2000);
+
+	startSPIFFS();
+
+	loadConfig();
+
+	WiFi.hostname(F("RFIDReader"));
+	setWifiManagerMenu();
 	_lastRead = millis();
 
-	pinMode(_pinBuz, OUTPUT);
-	buzz(1);
+	pinMode(BUZZ_PIN, OUTPUT);
+	_buzz.buzz(1);
 
-	if (_wm.autoConnect("RFIDReader"))
+	if (_wm->autoConnect("RFIDReader"))
 	{
 		_Log.print(LogObject::DebugLevels::Normal, F("IP Address "));
 		_Log.println(LogObject::DebugLevels::Normal, WiFi.localIP().toString());
 
 		//setOTA();
 
-		_wm.startWebPortal();
+		_wm->startWebPortal();
 
-		//wm.server->onNotFound(handleWebRequests);
-
-		if(_updater.CheckUpdate())
-		{
-			_updater.Updates();
-		}
+		//if(_updater.CheckUpdate())
+		//	{
+		//_updater.Updates();
+		//	}
 		_Log.println(LogObject::DebugLevels::Normal, F("Starting work."));
-		buzz(3);
+		_buzz.buzz(3);
 	}
 	else
 	{
-		_Log.println(LogObject::DebugLevels::Normal, F("Config portal running!"));
-		buzz(10);
+		_Log.println(LogObject::DebugLevels::Normal, F("Wifi not found wait 15s!"));
+		_buzz.continuousBuzz(4);
+		delay(15000);
+		//reset and try again, or maybe put it to deep sleep
+		ESP.reset();
+		delay(1000);
 	}
 }
 
 void loop()
 {
-	_wm.process();
+
+	_wm->server->handleClient();
+
 	_rfid.PCD_AntennaOn();
 	uint32 id = RFIDRead();
 	_rfid.PCD_AntennaOff();
 
 	if (id > 0)
 	{
-		buzz(1);
+		_buzz.buzz(1);
 
 		if (!sendAPIRequest(
 				_config.url_server,
@@ -98,9 +102,11 @@ void loop()
 				_config.response_Ok,
 				_config.uidNode))
 		{
-			buzz(8);
+			_buzz.continuousBuzz(4);
 		}
-
-		buzz(1);
+		else
+		{
+			_buzz.buzz(3);
+		}
 	}
 }

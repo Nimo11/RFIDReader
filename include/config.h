@@ -26,8 +26,9 @@ const char CFG_JSON_UID_NODE[]="uidnode";
 
 struct Config
 {
+  char admin_pass[100]="password";
   char url_server[150] = "https://";
-  char IP[10] = "";
+  char IP[15] = "";
   char response_Ok[20]="ok";
   char user[20]="";
   char password[20]="";

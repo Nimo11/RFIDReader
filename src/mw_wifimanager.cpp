@@ -6,19 +6,38 @@
 #include "config.h"
 #include "Global.h"
 
+WiFiManagerParameter _DIV_END("</DIV>");
+
 void setWifiManagerMenu()
 {
-  std::vector<const char *> menu = {"wifi", "info", "param","test", "sep", "restart"};
-  _wm.setMenu(menu);
-  _wm.setDebugOutput(_Log.level==LogObject::DebugLevels::Verbose);
-  _wm.setSaveParamsCallback(saveParam);
-  _wm.setConfigPortalBlocking(true);
-  //_wm.setCountry("FR");
+  _wm = new WiFiManager();
 
-  _wm.addParameter(&_url_server_param);
-  _wm.addParameter(&_IP_param);
-  _wm.addParameter(&_response_Ok_param);
-  _wm.addParameter(&_User_param);
-  _wm.addParameter(&_Password_param);
-  _wm.addParameter(&_UidNode_param);
+  IPAddress addr;
+  if (addr.fromString(_config.IP))
+  {
+    Serial.println(addr);
+    _wm->setSTAStaticIPConfig(addr, addr, IPAddress(255, 255, 255, 0));
+  }
+  else
+  {
+    Serial.print("Wrong IP ");
+    Serial.println(_config.IP);
+  }
+
+  _wm->AuthenticationRequired = true;
+  _wm->AuthUser = "admin";
+  _wm->AuthPassword = _config.admin_pass;
+  
+  std::vector<const char *> menu = {"param", "sep", "wifi", "info", "sep", "restart"};
+  _wm->setMenu(menu);
+  _wm->setDebugOutput(_Log.level == LogObject::DebugLevels::Verbose);
+  _wm->setSaveParamsCallback(saveParam);
+  _wm->setConfigPortalBlocking(true);
+
+  for (ConfigRef &p : _paramConfig)
+  {
+    _wm->addParameter(&p.WmParam);
+  }
+
+  _wm->addParameter(&_DIV_END);
 }

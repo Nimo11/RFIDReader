@@ -4,6 +4,9 @@
 #include "Global.h"
 #include "ArduinoJson.h"
 
+///
+/// return true if koString wasn't found
+///
 bool sendAPIRequest(const String url,const String uid,const char* user,const char* password,const String koString,String uidNode)
 {
   if ((WiFi.status() == WL_CONNECTED))
@@ -45,7 +48,7 @@ bool sendAPIRequest(const String url,const String uid,const char* user,const cha
 
       int c;
       ulong startMillis = millis();
-      ulong timeout = 4000;
+      ulong timeout = 6000;
       
       uint searchMatch = 0;
       uint len = http.getSize();
@@ -80,7 +83,8 @@ bool sendAPIRequest(const String url,const String uid,const char* user,const cha
     }
     else
     {
-      Serial.println("Error on HTTP request");
+      Serial.print(F("Error on HTTP request. Error code:"));
+      Serial.println(httpCode);
     }
 
     http.end();
