@@ -5,7 +5,6 @@
 #include "BearSSLHelpers.h"
 #include "ESP8266HTTPClient.h"
 
-#define ARDUINOJSON_DECODE_UNICODE 1
 
 extern bool sendAPIRequest(const String url,const String uid,const char* user,const char* password,const String koString,String uidNode);
 extern void sendAPIRequest2(String url);

@@ -13,10 +13,14 @@ void setWifiManagerMenu()
   _wm = new WiFiManager();
 
   IPAddress addr;
-  if (addr.fromString(_config.IP))
+  IPAddress gw;
+  IPAddress masq;
+
+
+  if (addr.fromString(_config.IP)&&gw.fromString(_config.GW)&&masq.fromString(_config.MASQ))
   {
     Serial.println(addr);
-    _wm->setSTAStaticIPConfig(addr, addr, IPAddress(255, 255, 255, 0));
+    _wm->setSTAStaticIPConfig(addr, addr, masq);
   }
   else
   {
@@ -27,7 +31,7 @@ void setWifiManagerMenu()
   _wm->AuthenticationRequired = true;
   _wm->AuthUser = "admin";
   _wm->AuthPassword = _config.admin_pass;
-  
+
   std::vector<const char *> menu = {"param", "sep", "wifi", "info", "sep", "restart"};
   _wm->setMenu(menu);
   _wm->setDebugOutput(_Log.level == LogObject::DebugLevels::Verbose);

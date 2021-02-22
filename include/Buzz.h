@@ -22,13 +22,14 @@ public:
     /*
             Create a new Buzzer
         */
-    Buzz(int buzzPin);
+    Buzz(int buzzPin,int ledPin);
 
     /*
             Buzzer pin
         */
     int BuzzPin;
-
+    int ledPin;
+    
     /*
             Generate x beep
             Where x is define by param buzzCount

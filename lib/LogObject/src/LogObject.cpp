@@ -1,6 +1,7 @@
 #include "LogObject.h"
-#include "Time.h"
-#include "FS.h"
+#include "time.h"
+//#include "FS.h"
+#include "LittleFS.h"
 
 const char *TIME_PATERN PROGMEM = "%02d-%02d-%02d %02d:%02d:%02d";
 
@@ -18,7 +19,7 @@ void LogObject::print(DebugLevels l, String s)
             Serial.print(s);
             break;
         case LogObject::DebugType::FileType:
-            File file = SPIFFS.open(fileName, "a");
+            File file = LittleFS.open(fileName, "a");
             file.print(getTimeString(0));
             file.print(" ");
             file.print(s);
@@ -35,7 +36,7 @@ void LogObject::print(DebugLevels l, byte &b, int i)
             Serial.print(b, i);
             break;
         case LogObject::DebugType::FileType:
-            File file = SPIFFS.open(fileName, "a");
+            File file = LittleFS.open(fileName, "a");
             file.print(getTimeString(0));
             file.print(" ");
             file.print(b, i);
@@ -53,7 +54,7 @@ void LogObject::println(DebugLevels l, String s)
             Serial.println(s);
             break;
         case LogObject::DebugType::FileType:
-            File file = SPIFFS.open(fileName, "a");
+            File file = LittleFS.open(fileName, "a");
             file.print(getTimeString(0));
             file.print(" ");
             file.print(s);
@@ -71,7 +72,7 @@ void LogObject::println(DebugLevels l, double s)
             Serial.println(s);
             break;
         case LogObject::DebugType::FileType:
-            File file = SPIFFS.open(fileName, "a");
+            File file = LittleFS.open(fileName, "a");
             file.print(getTimeString(0));
             file.print(" ");
             file.print(s);
@@ -89,7 +90,7 @@ void LogObject::println(DebugLevels l, byte &b, int i)
             Serial.println(b, i);
             break;
         case LogObject::DebugType::FileType:
-            File file = SPIFFS.open(fileName, "a");
+            File file = LittleFS.open(fileName, "a");
             file.print(getTimeString(0));
             file.print(" ");
             file.print(b, i);
@@ -116,7 +117,7 @@ void LogObject::printf(DebugLevels l, const __FlashStringHelper *f, ...)
             Serial.print(buff);
             break;
         case LogObject::DebugType::FileType:
-            File file = SPIFFS.open(fileName, "a");
+            File file = LittleFS.open(fileName, "a");
             file.print(getTimeString(0));
             file.print(" ");
             file.print(buff);
@@ -141,7 +142,7 @@ void LogObject::printf(DebugLevels l, const char *s, ...)
             Serial.print(buff);
             break;
         case LogObject::DebugType::FileType:
-            File file = SPIFFS.open(fileName, "a");
+            File file = LittleFS.open(fileName, "a");
             file.print(getTimeString(0));
             file.print(" ");
             file.print(buff);
@@ -152,15 +153,23 @@ void LogObject::printf(DebugLevels l, const char *s, ...)
 
 String LogObject::getTimeString(int delta)
 {
+    return "...";
+    time_t now;
+    struct tm * timeinfo;
+    time(&now);
+    timeinfo = localtime(&now);  
+
     char txt_time[20];
-    sprintf(txt_time, (const char *)FPSTR(TIME_PATERN), month(), day(), year(), hour(), minute(), second() - delta);
+    //sprintf(txt_time, (const char *)FPSTR(TIME_PATERN), month(), day(), year(), hour(), minute(), second() - delta);
+    sprintf(txt_time, (const char *)FPSTR(TIME_PATERN),timeinfo->tm_mon + 1, timeinfo->tm_mday, timeinfo->tm_year +1900, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec - delta);
     return txt_time;
 }
 
+
 void LogObject::initLogFile()
 {
-    SPIFFS.remove(fileName);
-    File initFile = SPIFFS.open(fileName, "w");
+    LittleFS.remove(fileName);
+    File initFile = LittleFS.open(fileName, "w");
     initFile.print("Debug file created ");
     initFile.println(getTimeString(0));
     initFile.close();

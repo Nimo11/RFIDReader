@@ -2,6 +2,7 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 #include "Global.h"
+#include "UriParser.h"
 #include "ArduinoJson.h"
 
 ///
@@ -22,12 +23,15 @@ bool sendAPIRequest(const String url,const String uid,const char* user,const cha
                             BR_TLS_RSA_WITH_AES_256_CBC_SHA,
                             BR_TLS_RSA_WITH_AES_128_CBC_SHA});
     httpsClient.setInsecure();
-
+    httpsClient.setBufferSizes(1024, 1024);
+    
+    UriParser u=UriParser::parseURI(url.c_str()); 
+    
     const char *headerkeys[] = {"Set-Cookie"};
     size_t headerkeyssize = sizeof(headerkeys) / sizeof(char *);
     http.collectHeaders(headerkeys, headerkeyssize);
-    http.begin(httpsClient, url); //Specify the URL
-    
+    http.begin(httpsClient,u.Host.c_str(),443,u.Path.c_str(),true); //Specify the URL
+        
     http.setAuthorization(user,password);
 
     http.addHeader("Content-Type", "application/json");
@@ -36,8 +40,8 @@ bool sendAPIRequest(const String url,const String uid,const char* user,const cha
     {
       http.addHeader("Cookie", _Cookie);
     }
-
-    int httpCode = http.POST("{'"+uidNode+"':'" + uid + "'}"); //Make the request
+    
+    int httpCode = http.POST("{'"+uidNode+"':'L" + uid + "'}"); //Make the request
     bool found = false;
 
     if (httpCode > 0)
@@ -85,6 +89,7 @@ bool sendAPIRequest(const String url,const String uid,const char* user,const cha
     {
       Serial.print(F("Error on HTTP request. Error code:"));
       Serial.println(httpCode);
+      Serial.println(http.errorToString(httpCode));
     }
 
     http.end();

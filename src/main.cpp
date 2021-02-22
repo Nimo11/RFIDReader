@@ -2,7 +2,7 @@
 
    
 *****************************************************************/
-
+#include "TZ.h"
 #include <SPI.h>
 #include <iostream>
 #include <cstring>
@@ -14,36 +14,47 @@
 #include "RFID.h"
 #include "api.h"
 #include "version.h"
+#include "webserver.h"
 #include "Buzz.h"
+#include "ota.h"
+#include "ArduinoOTA.h"
+
+
 #include <ESP8266WebServerSecure.h>
 
 #define BUZZ_PIN 16 // Buzzer
 
-const char *www_username = "admin";
-const char *www_password = "esp8266";
+Buzz _buzz(BUZZ_PIN,LED_BUILTIN);
+struct tm tm;
+char timeshow[10];
 
-Buzz _buzz(BUZZ_PIN);
+void configChange(int code){
+	ArduinoOTA.setPassword(_config.admin_pass);
+}
 
 void setup()
 {
 	Serial.begin(115200);
 
-
-
 	_Log.debugType = LogObject::DebugType::SerialType;
 	_Log.level = LogObject::DebugLevels::Verbose;
 
 	_updater.SetCurrentVersion(BUILD_NUMBER);
-	_updater.SetGITProjectURL("https://github.com/Nimo11/RFIDReader/master");
+	_updater.SetGITProjectURL("/Nimo11/RFIDReader/master");
 
 	SPI.begin();
 	_rfid.PCD_Init(); // Init MFRC522
+	delay(5);
 
 	_rfid.PCD_DumpVersionToSerial();
+	//_rfid.PCD_SetAntennaGain(MFRC522::RxGain_max);
+	//Serial.println(_rfid .PCD_PerformSelfTest());
 	_rfid.PCD_AntennaOff();
 	delay(2000);
 
-	startSPIFFS();
+	startLittleFS();
+
+	_config.changeHandler=configChange;
 
 	loadConfig();
 
@@ -51,7 +62,6 @@ void setup()
 	setWifiManagerMenu();
 	_lastRead = millis();
 
-	pinMode(BUZZ_PIN, OUTPUT);
 	_buzz.buzz(1);
 
 	if (_wm->autoConnect("RFIDReader"))
@@ -59,14 +69,14 @@ void setup()
 		_Log.print(LogObject::DebugLevels::Normal, F("IP Address "));
 		_Log.println(LogObject::DebugLevels::Normal, WiFi.localIP().toString());
 
-		//setOTA();
+		setOTA("RFIDReader", _config.admin_pass);
 
 		_wm->startWebPortal();
 
-		//if(_updater.CheckUpdate())
-		//	{
-		//_updater.Updates();
-		//	}
+    	_wm->server->onNotFound(handleWebRequests);
+
+		configTime(TZ_Europe_Paris, "pool.ntp.org"); 
+
 		_Log.println(LogObject::DebugLevels::Normal, F("Starting work."));
 		_buzz.buzz(3);
 	}
@@ -83,7 +93,7 @@ void setup()
 
 void loop()
 {
-
+	ArduinoOTA.handle();
 	_wm->server->handleClient();
 
 	_rfid.PCD_AntennaOn();
@@ -106,7 +116,9 @@ void loop()
 		}
 		else
 		{
+			digitalWrite(LED_BUILTIN, HIGH);
 			_buzz.buzz(3);
 		}
 	}
 }
+

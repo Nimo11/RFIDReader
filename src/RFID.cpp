@@ -3,8 +3,8 @@
 
 uint32 RFIDRead()
 {
+    
     uint32 uid=0;
-
     // Look for new cards
     if (!_rfid.PICC_IsNewCardPresent())
         return uid;

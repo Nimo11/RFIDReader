@@ -39,15 +39,21 @@ public:
         Size =size;
         WmParam=WiFiManagerParameter(node, label, param, Size);
     }
-
+    ConfigRef(const char* label)
+    {
+        WmParam=WiFiManagerParameter(label);
+    }
     char * CfgPtr;
     int Size;
     WiFiManagerParameter WmParam;
 };
 
-extern ConfigRef _paramConfig[7];
+extern ConfigRef _paramConfig[11];
 
 extern const int _pinBuz;
+extern const int _greenLed;
+extern const int _redLed;
+
 extern MFRC522 _rfid;
 
 //extern MFRC522::MIFARE_Key key; 
